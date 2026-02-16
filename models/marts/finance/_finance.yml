@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: rpt_monthly_claims_summary
+    description: >
+      Monthly aggregated claims metrics by claim type. Includes financial
+      summaries, patient/provider counts, payment rates, and cumulative YTD paid.
+      Grain: one row per month per claim type.
+    columns:
+      - name: service_month
+        tests:
+          - not_null
+      - name: claim_type
+        tests:
+          - not_null
+      - name: total_paid
+        tests:
+          - not_null
+
+  - name: rpt_provider_performance
+    description: >
+      Provider-level performance report with financial metrics, volume statistics,
+      and peer-group percentile rankings by specialty.
+      Grain: one row per rendering provider.
+    columns:
+      - name: rendering_provider_npi
+        tests:
+          - unique
+          - not_null
+      - name: specialty
+        tests:
+          - not_null

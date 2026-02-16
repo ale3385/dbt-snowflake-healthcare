@@ -1,0 +1,9 @@
+target/
+dbt_packages/
+logs/
+.env
+profiles.yml
+.vscode/
+.cursor/
+.claude/
+__pycache__/

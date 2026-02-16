@@ -1,0 +1,54 @@
+name: dbt CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+env:
+  DBT_PROFILES_DIR: ./profiles
+
+jobs:
+  sqlfluff-lint:
+    name: SQL Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install sqlfluff sqlfluff-templater-dbt dbt-snowflake
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Run sqlfluff lint
+        run: sqlfluff lint models/ --dialect snowflake
+
+  dbt-compile:
+    name: dbt Compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install dbt-snowflake
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Compile dbt project
+        run: dbt compile
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}

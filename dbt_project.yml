@@ -1,0 +1,43 @@
+name: healthcare_claims
+version: "1.0.0"
+config-version: 2
+
+profile: healthcare_claims
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - target
+  - dbt_packages
+
+vars:
+  claims_database: "{{ env_var('SNOWFLAKE_DATABASE', 'FL_DATA_DEV') }}"
+
+models:
+  healthcare_claims:
+    staging:
+      +materialized: view
+      +schema: staging
+      +tags: ["staging"]
+    marts:
+      core:
+        +materialized: table
+        +schema: data_mart
+        +tags: ["core"]
+      finance:
+        +materialized: table
+        +schema: data_mart
+        +tags: ["finance"]
+
+seeds:
+  healthcare_claims:
+    +schema: raw
+
+snapshots:
+  healthcare_claims:
+    +schema: snapshots

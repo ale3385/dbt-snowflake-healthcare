@@ -1,0 +1,56 @@
+version: 2
+
+sources:
+  - name: healthcare_raw
+    description: Raw healthcare data loaded via COPY INTO from S3
+    database: "{{ var('claims_database') }}"
+    schema: raw
+    freshness:
+      warn_after: { count: 24, period: hour }
+      error_after: { count: 48, period: hour }
+    loaded_at_field: _loaded_at
+
+    tables:
+      - name: patients
+        description: Patient demographics and enrollment information
+        columns:
+          - name: patient_id
+            description: Unique patient identifier
+            tests:
+              - unique
+              - not_null
+
+      - name: providers
+        description: Healthcare provider registry
+        columns:
+          - name: provider_npi
+            description: National Provider Identifier (NPI)
+            tests:
+              - unique
+              - not_null
+
+      - name: claims
+        description: Medical claims header records
+        columns:
+          - name: claim_id
+            description: Unique claim identifier
+            tests:
+              - unique
+              - not_null
+
+      - name: claim_lines
+        description: Individual service lines within a claim
+        columns:
+          - name: claim_line_id
+            description: Unique claim line identifier
+            tests:
+              - unique
+              - not_null
+
+      - name: diagnoses
+        description: ICD-10 diagnosis codes assigned to claims
+        columns:
+          - name: diagnosis_id
+            description: Unique diagnosis record identifier
+            tests:
+              - not_null

@@ -1,0 +1,98 @@
+version: 2
+
+models:
+  - name: stg_patients
+    description: Cleaned patient demographics with enrollment status and computed age
+    columns:
+      - name: patient_id
+        description: Unique patient identifier
+        tests:
+          - unique
+          - not_null
+      - name: gender
+        tests:
+          - accepted_values:
+              values: ["M", "F", "U", "O"]
+      - name: is_active
+        description: Whether the patient has active enrollment
+        tests:
+          - not_null
+      - name: age
+        description: Computed current age in years
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 120
+
+  - name: stg_providers
+    description: Cleaned provider registry with NPI, specialty, and network status
+    columns:
+      - name: provider_npi
+        description: National Provider Identifier
+        tests:
+          - unique
+          - not_null
+      - name: provider_type
+        tests:
+          - accepted_values:
+              values: ["INDIVIDUAL", "ORGANIZATION"]
+      - name: network_status
+        tests:
+          - accepted_values:
+              values: ["IN_NETWORK", "OUT_OF_NETWORK", "TIER_1", "TIER_2"]
+
+  - name: stg_claims
+    description: Cleaned claims header with dollar conversions and standardized codes
+    columns:
+      - name: claim_id
+        description: Unique claim identifier
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_patients')
+              field: patient_id
+      - name: claim_type
+        tests:
+          - accepted_values:
+              values: ["PROFESSIONAL", "INSTITUTIONAL", "DENTAL", "PHARMACY"]
+      - name: claim_status
+        tests:
+          - accepted_values:
+              values: ["SUBMITTED", "ACCEPTED", "DENIED", "PAID", "ADJUSTED", "VOIDED"]
+      - name: billed_amount
+        tests:
+          - not_null
+
+  - name: stg_claim_lines
+    description: Cleaned claim line items with procedure codes and dollar conversions
+    columns:
+      - name: claim_line_id
+        description: Unique claim line identifier
+        tests:
+          - unique
+          - not_null
+      - name: claim_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_claims')
+              field: claim_id
+
+  - name: stg_diagnoses
+    description: Cleaned diagnosis assignments with primary flag and position
+    columns:
+      - name: diagnosis_id
+        tests:
+          - unique
+          - not_null
+      - name: claim_id
+        tests:
+          - not_null
+      - name: is_primary
+        description: Whether this is the primary (first-position) diagnosis
+        tests:
+          - not_null

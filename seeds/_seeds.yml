@@ -1,0 +1,15 @@
+version: 2
+
+seeds:
+  - name: diagnosis_codes
+    description: ICD-10 reference codes with category classification and chronic flag
+    columns:
+      - name: diagnosis_code
+        tests:
+          - unique
+          - not_null
+      - name: is_chronic
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["true", "false"]

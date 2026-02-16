@@ -1,0 +1,16 @@
+diagnosis_code,description,category,subcategory,is_chronic
+E11.9,Type 2 diabetes mellitus without complications,Endocrine,Diabetes,true
+I10,Essential (primary) hypertension,Circulatory,Hypertension,true
+J06.9,Acute upper respiratory infection unspecified,Respiratory,Upper Respiratory,false
+M54.5,Low back pain,Musculoskeletal,Back Pain,false
+K21.0,Gastro-esophageal reflux disease with esophagitis,Digestive,GERD,true
+F41.1,Generalized anxiety disorder,Mental Health,Anxiety,true
+J18.9,Pneumonia unspecified organism,Respiratory,Pneumonia,false
+N39.0,Urinary tract infection site not specified,Genitourinary,UTI,false
+R10.9,Unspecified abdominal pain,Symptoms,Abdominal Pain,false
+Z00.00,Encounter for general adult medical examination without abnormal findings,Factors,Preventive,false
+E78.5,Dyslipidemia unspecified,Endocrine,Lipid Disorders,true
+I25.10,Atherosclerotic heart disease of native coronary artery without angina pectoris,Circulatory,CAD,true
+J44.1,Chronic obstructive pulmonary disease with acute exacerbation,Respiratory,COPD,true
+M79.3,Panniculitis unspecified,Musculoskeletal,Soft Tissue,false
+G43.909,Migraine unspecified not intractable without status migrainosus,Nervous,Migraine,true

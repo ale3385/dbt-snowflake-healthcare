@@ -1,0 +1,67 @@
+version: 2
+
+models:
+  - name: dim_patients
+    description: >
+      Patient dimension enriched with claim activity summary and utilization tier.
+      Grain: one row per patient.
+    columns:
+      - name: patient_id
+        tests:
+          - unique
+          - not_null
+      - name: utilization_tier
+        tests:
+          - accepted_values:
+              values: ["HIGH", "MEDIUM", "LOW"]
+
+  - name: dim_providers
+    description: >
+      Provider dimension with practice details and aggregated claim metrics.
+      Grain: one row per provider NPI.
+    columns:
+      - name: provider_npi
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_diagnoses
+    description: >
+      Diagnosis dimension combining ICD-10 reference data with usage statistics.
+      Grain: one row per diagnosis code.
+    columns:
+      - name: diagnosis_code
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_claims
+    description: >
+      Claim-level fact table with financial metrics, service details, and
+      aggregated line/diagnosis counts. Incremental merge on claim_id.
+      Grain: one row per claim.
+    columns:
+      - name: claim_id
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_patients')
+              field: patient_id
+      - name: rendering_provider_npi
+        tests:
+          - relationships:
+              to: ref('dim_providers')
+              field: provider_npi
+      - name: billed_amount
+        tests:
+          - not_null
+      - name: payment_rate_pct
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 200
+              row_condition: "payment_rate_pct IS NOT NULL"
