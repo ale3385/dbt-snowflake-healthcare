@@ -3,6 +3,10 @@ dialect = snowflake
 templater = dbt
 max_line_length = 120
 indent_unit = space
+# RF01/RF02/RF04 false positives without dbt templater
+# ST06 column order is subjective
+# LT02 indent false positives from Jinja macros in raw templater
+exclude_rules = RF01, RF02, RF04, ST06, LT02
 
 [sqlfluff:indentation]
 tab_space_size = 4
@@ -24,3 +28,6 @@ aliasing = explicit
 
 [sqlfluff:rules:aliasing.column]
 aliasing = explicit
+
+[sqlfluff:rules:structure.column_order]
+enabled = false

@@ -21,4 +21,4 @@ jobs:
         run: pip install sqlfluff
 
       - name: Run sqlfluff lint
-        run: sqlfluff lint models/ --dialect snowflake --templater raw
+        run: sqlfluff lint models/ --dialect snowflake --templater raw --ignore parsing

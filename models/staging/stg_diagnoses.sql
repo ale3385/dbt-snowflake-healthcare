@@ -11,10 +11,7 @@ renamed AS (
         claim_id,
         UPPER(TRIM(diagnosis_code)) AS diagnosis_code,
         diagnosis_sequence AS diagnosis_position,
-        CASE
-            WHEN diagnosis_sequence = 1 THEN TRUE
-            ELSE FALSE
-        END AS is_primary,
+        (diagnosis_sequence = 1) AS is_primary,
         UPPER(TRIM(diagnosis_type)) AS diagnosis_type,
         _loaded_at
 

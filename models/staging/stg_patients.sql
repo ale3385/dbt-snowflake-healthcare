@@ -17,12 +17,9 @@ renamed AS (
         insurance_plan_id,
         enrollment_start_date,
         enrollment_end_date,
-        CASE
-            WHEN enrollment_end_date IS NULL
-                OR enrollment_end_date >= CURRENT_DATE
-            THEN TRUE
-            ELSE FALSE
-        END AS is_active,
+        COALESCE(
+            enrollment_end_date >= CURRENT_DATE, TRUE
+        ) AS is_active,
         DATEDIFF('year', date_of_birth, CURRENT_DATE) AS age,
         _loaded_at
 

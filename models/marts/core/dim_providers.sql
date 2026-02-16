@@ -30,12 +30,9 @@ SELECT
     p.network_status,
     p.effective_date,
     p.termination_date,
-    CASE
-        WHEN p.termination_date IS NULL
-            OR p.termination_date >= CURRENT_DATE
-        THEN TRUE
-        ELSE FALSE
-    END AS is_active,
+    COALESCE(
+        p.termination_date >= CURRENT_DATE, TRUE
+    ) AS is_active,
     COALESCE(cm.total_claims_rendered, 0) AS total_claims_rendered,
     COALESCE(cm.unique_patients, 0) AS unique_patients,
     COALESCE(cm.total_paid_amount, 0) AS total_paid_amount,
